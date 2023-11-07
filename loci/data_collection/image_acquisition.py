@@ -11,7 +11,7 @@ from loci.data_collection.utils import get_camera, setup_camera, FrameHandler
 
 if __name__ == '__main__':
     with Vimba.get_instance():
-        with get_camera() as cam:
+        with get_camera(None) as cam:
 
             # Start Streaming, wait for five seconds, stop streaming
             setup_camera(cam)
