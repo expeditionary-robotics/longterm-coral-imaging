@@ -1,0 +1,10 @@
+name: corals
+channels: 
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.7
+variables:
+  INPUT_DATA: "${PWD}/data"
+  OUTPUT_DATA: "${PWD}/output"
+  CORALS_HOME: "${PWD}"
