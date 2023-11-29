@@ -14,7 +14,7 @@ if __name__ == '__main__':
         with get_camera(None) as cam:
 
             # Start Streaming, wait for five seconds, stop streaming
-            setup_camera(cam)
+            setup_camera(cam, fps=1)
             handler = FrameHandler()
 
             try:
