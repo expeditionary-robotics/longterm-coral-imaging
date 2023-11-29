@@ -89,7 +89,7 @@ def setup_camera(cam: Camera, fps: int=4):
 
 
 class FrameHandler:
-    def __init__(self, verbose=False, display=False, write_to_file=True):
+    def __init__(self, verbose=False, display=False, write_to_file=True, write_path="./"):
         self.shutdown_event = threading.Event()
         self.verbose = verbose  # whether to print to terminal
         self.display = display  # whether to render image on a screen
