@@ -6,6 +6,7 @@ import cv2
 import time
 import numpy as np
 from typing import Optional
+from PIL import Image
 from vimba import *
 
 
@@ -89,11 +90,10 @@ def setup_camera(cam: Camera, fps: int=4):
 
 
 class FrameHandler:
-    def __init__(self, verbose=False, display=False, write_to_file=True):
+    def __init__(self, verbose=False, file_target="./"):
         self.shutdown_event = threading.Event()
-        self.verbose = verbose  # whether to print to terminal
-        self.display = display  # whether to render image on a screen
-        self.write_to_file = write_to_file  # whetehr to save the image to file
+        self.verbose = verbose  # whether to print to terminal or render images
+        self.file_target = file_target  # where to write images to file
 
 
     def __call__(self, cam: Camera, frame: Frame):
@@ -106,20 +106,20 @@ class FrameHandler:
 
         elif frame.get_status() == FrameStatus.Complete:
             capture_time = time.time_ns()  # time since epoch in seconds
-            # print(frame.get_timestamp())
-            # print(capture_time)
+            frame_time = frame.get_timestamp()
+            frame.as_opencv_image
             if self.verbose:
-                print('{} acquired {}'.format(cam, frame), flush=True)
+                print('{} acquired {} at {} with cam time {}'.format(cam, frame, capture_time, frame_time), flush=True)
 
             frame_data = frame.as_numpy_ndarray() # replaces the original vimba.Frame object with a numpy.ndarray
-            frame_transport = cv2.cvtColor(frame_data, cv2.COLOR_BAYER_RG2RGB) # converts to an opencv color type that renders
-            
-            if self.write_to_file:
-                np.save(f'array_{frame.get_id()}_{capture_time}', frame_data)
-                cv2.imwrite(f'image_{frame.get_id()}_{capture_time}.png', frame_transport*16)  # saves a nicely rendered image to png format
+            np.save(f'array_{frame.get_id()}_{capture_time}_{frame_time}', frame_data)
+            im = Image.fromarray(frame_data)
+            im.save(f'bmpimage_{frame.get_id()}_{capture_time}_{frame_time}.bmp')
+            im.save(f'pngimage_{frame.get_id()}_{capture_time}_{frame_time}.png')
                 
-            if self.display:
+            if self.verbose:
                 msg = 'Stream from \'{}\'. Press <Enter> to stop stream.'
+                frame_transport = cv2.cvtColor(frame_data, cv2.COLOR_BAYER_RG2RGB) # converts to an opencv color type that renders
                 cv2.imshow(msg.format(cam.get_name()), frame_transport*16)  # creates a nicely rendered image onscreen
             
         cam.queue_frame(frame)
