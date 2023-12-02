@@ -76,7 +76,15 @@ def main():
     all_pts = []
     fnames = []
     for fname in os.listdir(target_path):
-        img = cv2.imread(os.path.join(target_path, fname))
+        if ".npy" in fname:
+            # convert to an image
+            array_target = np.load(os.path.join(target_path, fname))
+            frame_transport = cv2.cvtColor(array_target, cv2.COLOR_BAYER_GR2RGB) # converts to an opencv color type that renders
+            img = cv2.normalize(frame_transport, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+        else:
+            # this is an image directory
+            # img = cv2.imread(os.path.join(target_path, fname))
+            img = None
         if img is None:
             print(f"No valid image at {fname}, skipping.")
             continue
