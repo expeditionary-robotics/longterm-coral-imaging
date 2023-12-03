@@ -60,7 +60,7 @@ def setup_camera(cam: Camera, fps: int=4):
             print("Cannot set white balance.")
             pass
 
-        # Try to adjust Ge"Oops! Can't set that!")V packet size. This Feature is only available for GigE - Cameras.
+        # Try to adjust GeV packet size. This Feature is only available for GigE - Cameras.
         try:
             cam.GVSPAdjustPacketSize.run()
 
