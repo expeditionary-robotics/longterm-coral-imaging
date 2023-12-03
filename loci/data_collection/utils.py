@@ -113,9 +113,9 @@ class FrameHandler:
 
             frame_data = frame.as_numpy_ndarray() # replaces the original vimba.Frame object with a numpy.ndarray
             np.save(f'array_{frame.get_id()}_{capture_time}_{frame_time}', frame_data)
-            im = Image.fromarray(frame_data)
-            im.save(f'bmpimage_{frame.get_id()}_{capture_time}_{frame_time}.bmp')
-            im.save(f'pngimage_{frame.get_id()}_{capture_time}_{frame_time}.png')
+            # im = Image.fromarray(frame_data)
+            # im.save(f'bmpimage_{frame.get_id()}_{capture_time}_{frame_time}.bmp')
+            # im.save(f'pngimage_{frame.get_id()}_{capture_time}_{frame_time}.png')
                 
             if self.verbose:
                 msg = 'Stream from \'{}\'. Press <Enter> to stop stream.'
