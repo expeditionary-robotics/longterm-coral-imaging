@@ -2,11 +2,11 @@
 
 import threading
 import sys
+import os
 import cv2
 import time
 import numpy as np
 from typing import Optional
-from PIL import Image
 from vimba import *
 
 
@@ -60,7 +60,7 @@ def setup_camera(cam: Camera, fps: int=4):
             print("Cannot set white balance.")
             pass
 
-        # Try to adjust Ge"Oops! Can't set that!")V packet size. This Feature is only available for GigE - Cameras.
+        # Try to adjust GeV packet size. This Feature is only available for GigE - Cameras.
         try:
             cam.GVSPAdjustPacketSize.run()
 
@@ -86,6 +86,7 @@ def setup_camera(cam: Camera, fps: int=4):
 
         # Select the pixel formatting
         cam_formats = cam.get_pixel_formats()
+        print(cam_formats)
         cam.set_pixel_format(cam_formats[2])  # set to maximum bit depth image for GC1380C
 
 
@@ -107,19 +108,17 @@ class FrameHandler:
         elif frame.get_status() == FrameStatus.Complete:
             capture_time = time.time_ns()  # time since epoch in seconds
             frame_time = frame.get_timestamp()
-            frame.as_opencv_image
-            if self.verbose:
+
+            if self.verbose is True:
                 print('{} acquired {} at {} with cam time {}'.format(cam, frame, capture_time, frame_time), flush=True)
 
-            frame_data = frame.as_numpy_ndarray() # replaces the original vimba.Frame object with a numpy.ndarray
-            np.save(f'array_{frame.get_id()}_{capture_time}_{frame_time}', frame_data)
-            # im = Image.fromarray(frame_data)
-            # im.save(f'bmpimage_{frame.get_id()}_{capture_time}_{frame_time}.bmp')
-            # im.save(f'pngimage_{frame.get_id()}_{capture_time}_{frame_time}.png')
-                
-            if self.verbose:
+            frame_data = frame.as_numpy_ndarray() # replaces the original vimba.Frame object with a numpy.ndarray    
+            np.save(os.path.join(self.file_target, f'array_{frame.get_id()}_{capture_time}_{frame_time}'), frame_data)
+
+            if self.verbose is True:
+                frame_transport = cv2.cvtColor(frame_data, cv2.COLOR_BAYER_GR2RGB) # converts to an opencv color type that renders
+                cv2.imwrite(os.path.join(self.file_target, f'pngimage_{frame.get_id()}_{capture_time}_{frame_time}.png'), frame_transport*16)
                 msg = 'Stream from \'{}\'. Press <Enter> to stop stream.'
-                frame_transport = cv2.cvtColor(frame_data, cv2.COLOR_BAYER_RG2RGB) # converts to an opencv color type that renders
                 cv2.imshow(msg.format(cam.get_name()), frame_transport*16)  # creates a nicely rendered image onscreen
             
         cam.queue_frame(frame)
