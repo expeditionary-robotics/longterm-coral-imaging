@@ -54,7 +54,7 @@ def setup_camera(cam: Camera, fps: int=4):
 
         # Enable white balancing if camera supports it
         try:
-            cam.BalanceWhiteAuto.set('Continuous')
+            cam.BalanceWhiteAuto.set('Continous')
 
         except (AttributeError, VimbaFeatureError):
             print("Cannot set white balance.")
@@ -82,6 +82,14 @@ def setup_camera(cam: Camera, fps: int=4):
 
         except (AttributeError, VimbaFeatureError):
             print("Cannot set frame rate.")
+            pass
+
+	# Enable exposure settings
+        try:
+            feature = cam.get_feature_by_name("ExposureTimeAbs")
+            feature.set(1000)
+        except:
+            print("Can't set exposure")
             pass
 
         # Select the pixel formatting
