@@ -39,23 +39,35 @@ def get_camera(camera_id: Optional[str]) -> Camera:
             return cams[0]
 
 
-def setup_camera(cam: Camera, fps: int=4):
+def setup_camera(cam: Camera, fps: int=4, exposure_time: int=4000, settings_file: str=""):
     """Set consistent camera settings for image logging.
     
     TODO[vpreston] Check that these are the settings we want to use."""
     with cam:
+        # Load in saved user settings
+        if settings_file != "":
+            try:
+                cam.load_settings(settings_file, PersistType.All)
+            except (AttributeError, VimbaFeatureError):
+                print(f"Cannot load settings from file {settings_file}")
+                pass
+        else:
+            pass
+        
         # Enable auto exposure time setting if camera supports it
         try:
             cam.ExposureAuto.set('Continuous')
-
+            feature = cam.get_feature_by_name("ExposureTimeAbs")
+            feature.set(exposure_time) #sets absolute timing for exposure
+            feature = cam.get_feature_by_name("ExposureAutoMax")
+            feature.set(exposure_time) #sets hard limit on exposure auto maximum value
         except (AttributeError, VimbaFeatureError):
             print("Cannot set exposure.")
             pass
 
         # Enable white balancing if camera supports it
         try:
-            cam.BalanceWhiteAuto.set('Continuous')
-
+            cam.BalanceWhiteAuto.set('Off')
         except (AttributeError, VimbaFeatureError):
             print("Cannot set white balance.")
             pass
@@ -63,10 +75,8 @@ def setup_camera(cam: Camera, fps: int=4):
         # Try to adjust GeV packet size. This Feature is only available for GigE - Cameras.
         try:
             cam.GVSPAdjustPacketSize.run()
-
             while not cam.GVSPAdjustPacketSize.is_done():
                 pass
-
         except (AttributeError, VimbaFeatureError):
             print("Cannot adjust packets.")
             pass
