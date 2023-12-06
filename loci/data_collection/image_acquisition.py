@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser.add_argument("-fps", "--frames_per_second", type=int, action="store", default=1, help="Frames per second to record (1, 2, 3 or 4)")
     parser.add_argument("-b", "--buffer", type=int, action="store", default=10, help="Number of frames to buffer when streaming.")
     parser.add_argument("-v", "--verbose", type=bool, action="store", default=False, help="Whether to print to screen or render images.")
-    parser.add_argument("-xml, --xml_settings", type=str, action="store", default="", help="Provide a target for user settings files" )
+    parser.add_argument("-xml", "--xml_settings", type=str, action="store", default="", help="Provide a target for user settings files" )
     parser.add_argument("-e", "--exposure", type=int, action="store", default=4000, help="Set absolute exposure time.")
 
     args = parser.parse_args()
