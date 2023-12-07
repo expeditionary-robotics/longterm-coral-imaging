@@ -27,7 +27,7 @@ def main():
             img = cv2.cvtColor(array_target, cv2.COLOR_BAYER_GR2RGB)
             img = img*16
             # img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-            # cropped_img = img[50:-50, 50:-50, :]
+            img = img[220:-210, 110:-60, :]
             if verbose is True:
                 cv2.namedWindow("image", cv2.WINDOW_NORMAL)
                 cv2.imshow("image", img)

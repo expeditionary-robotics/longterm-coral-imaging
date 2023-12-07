@@ -16,7 +16,8 @@ if __name__ == '__main__':
     parser.add_argument("-b", "--buffer", type=int, action="store", default=10, help="Number of frames to buffer when streaming.")
     parser.add_argument("-v", "--verbose", type=bool, action="store", default=False, help="Whether to print to screen or render images.")
     parser.add_argument("-xml", "--xml_settings", type=str, action="store", default="", help="Provide a target for user settings files" )
-    parser.add_argument("-e", "--exposure", type=int, action="store", default=4000, help="Set absolute exposure time.")
+    parser.add_argument("-e", "--exposure", type=int, action="store", default=4000, help="Set MAX absolute exposure time.")
+    parser.add_argument("-g", "--gain", type=int, action="store", default=20, help="Set the gain of the camera.")
 
     args = parser.parse_args()
     fps = args.frames_per_second
@@ -25,6 +26,7 @@ if __name__ == '__main__':
     verbose = args.verbose
     settings_xml = args.xml_settings
     exposure_time = args.exposure
+    gain_db = args.gain
 
     # Make the write path target if it is not already in existence
     if os.path.exists(write_path) is False:
@@ -35,7 +37,7 @@ if __name__ == '__main__':
         with get_camera(None) as cam:
 
             # Start streaming at the frame rate specified
-            setup_camera(cam, fps=fps, exposure_time=exposure_time, settings_file=settings_xml)
+            setup_camera(cam, fps=fps, exposure_time=exposure_time, gain_setting=gain_db, settings_file=settings_xml)
             handler = FrameHandler(verbose=verbose, file_target=write_path)
 
             try:

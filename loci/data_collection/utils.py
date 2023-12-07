@@ -39,7 +39,7 @@ def get_camera(camera_id: Optional[str]) -> Camera:
             return cams[0]
 
 
-def setup_camera(cam: Camera, fps: int=4, exposure_time: int=4000, settings_file: str=""):
+def setup_camera(cam: Camera, fps: int=4, exposure_time: int=4000, gain_setting: int=20, settings_file: str=""):
     """Set consistent camera settings for image logging.
     
     TODO[vpreston] Check that these are the settings we want to use."""
@@ -56,13 +56,20 @@ def setup_camera(cam: Camera, fps: int=4, exposure_time: int=4000, settings_file
         
         # Enable auto exposure time setting if camera supports it
         try:
-            cam.ExposureAuto.set('Continuous')
-            feature = cam.get_feature_by_name("ExposureTimeAbs")
-            feature.set(exposure_time) #sets absolute timing for exposure
             feature = cam.get_feature_by_name("ExposureAutoMax")
             feature.set(exposure_time) #sets hard limit on exposure auto maximum value
+            cam.ExposureAuto.set('Continuous')
         except (AttributeError, VimbaFeatureError):
             print("Cannot set exposure.")
+            pass
+
+        # Enable gain setting if camera supports it
+        try:
+            cam.GainAuto.set('Off')
+            feature = cam.get_feature_by_name("GainRaw")
+            feature.set(gain_setting)
+        except (AttributeError, VimbaFeatureError):
+            print("Cannot set gain.")
             pass
 
         # Enable white balancing if camera supports it
@@ -118,6 +125,9 @@ class FrameHandler:
         elif frame.get_status() == FrameStatus.Complete:
             capture_time = time.time_ns()  # time since epoch in seconds
             frame_time = frame.get_timestamp()
+
+            # feature = cam.get_feature_by_name("ExposureTimeAbs")
+            # print(feature)
 
             if self.verbose is True:
                 print('{} acquired {} at {} with cam time {}'.format(cam, frame, capture_time, frame_time), flush=True)
