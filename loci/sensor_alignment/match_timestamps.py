@@ -24,12 +24,12 @@ if __name__ == "__main__":
     # Grab the image name
     fname_labels = []
     for fname in os.listdir(image_target_path):
-        if "npy" in fname:
+        if "png" in fname:
             # Make sure that any copies are ignored, for simplicity
-            fname_labels.append(fname.split(".")[0])
+            fname_labels.append(fname)
 
     # Get image times
-    image_times = [float(fn.split("_")[2])/1e9 for fn in fname_labels]
+    image_times = [float(fn.split("_")[3])/1e9 for fn in fname_labels]
 
     # Create a pandas dataframe of the file names and times
     df = pd.DataFrame(dict(file_name=fname_labels, file_time=image_times))
@@ -58,3 +58,9 @@ if __name__ == "__main__":
         interpolated = merged.interpolate(method="index")
     all_df = interpolated.loc[ind]
     print(all_df)
+
+    # Save
+    all_df.to_csv(f"./output/all_1207_trial2.csv")
+
+    plt.plot(all_df.Lng, all_df.Lat)
+    plt.show()
