@@ -40,9 +40,7 @@ def get_camera(camera_id: Optional[str]) -> Camera:
 
 
 def setup_camera(cam: Camera, fps: int=4, exposure_time: int=4000, gain_setting: int=20, settings_file: str=""):
-    """Set consistent camera settings for image logging.
-    
-    TODO[vpreston] Check that these are the settings we want to use."""
+    """Set consistent camera settings for image logging."""
     with cam:
         # Load in saved user settings
         if settings_file != "":
@@ -54,7 +52,7 @@ def setup_camera(cam: Camera, fps: int=4, exposure_time: int=4000, gain_setting:
         else:
             pass
         
-        # Enable auto exposure time setting if camera supports it
+        # Set auto exposure parameters
         try:
             feature = cam.get_feature_by_name("ExposureAutoMax")
             feature.set(exposure_time) #sets hard limit on exposure auto maximum value
@@ -63,7 +61,7 @@ def setup_camera(cam: Camera, fps: int=4, exposure_time: int=4000, gain_setting:
             print("Cannot set exposure.")
             pass
 
-        # Enable gain setting if camera supports it
+        # Disable gain setting so that auto exposure works
         try:
             cam.GainAuto.set('Off')
             feature = cam.get_feature_by_name("GainRaw")
@@ -72,7 +70,7 @@ def setup_camera(cam: Camera, fps: int=4, exposure_time: int=4000, gain_setting:
             print("Cannot set gain.")
             pass
 
-        # Enable white balancing if camera supports it
+        # Disable white balancing
         try:
             cam.BalanceWhiteAuto.set('Off')
         except (AttributeError, VimbaFeatureError):

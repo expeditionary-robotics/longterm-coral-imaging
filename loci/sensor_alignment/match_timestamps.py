@@ -11,6 +11,7 @@ if __name__ == "__main__":
     # Parse command line info
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--image_files", type=str, action="store", default="./", help="Path to file containing images you would like to assign coordinates.")
+    parser.add_argument("-w", "--write_file", type=str, action="store", defaul="./output/save_pose_reference.csv", help="Path for saving the CSV reference of image name and GPS coordinate.")
     parser.add_argument("-p", "--poses", type=str, action="store", default=None, help="File which contains GPS data and times.")
     parser.add_argument("-m", "--interp_method", type=str, action="store", default="interpolate_gps",
                          help="Set method for inteprolating; choose closest (assigns nearest GPS pose in time to camera image) or interpolate_gps (guesses GPS coordinate)")
@@ -18,6 +19,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     image_target_path = args.image_files
+    save_target_path = args.write_file
     pose_target_file = args.poses
     interp_method = args.interp_method
 
@@ -60,7 +62,7 @@ if __name__ == "__main__":
     print(all_df)
 
     # Save
-    all_df.to_csv(f"./output/all_1207_trial2.csv")
+    all_df.to_csv(save_target_path)
 
     plt.plot(all_df.Lng, all_df.Lat)
     plt.show()
