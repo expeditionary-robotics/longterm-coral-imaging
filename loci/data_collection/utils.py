@@ -135,6 +135,7 @@ class FrameHandler:
 
             if self.verbose is True:
                 frame_transport = cv2.cvtColor(frame_data, cv2.COLOR_BAYER_GR2RGB) # converts to an opencv color type that renders
+                # frame_transport = cv2.cvtColor(frame_data, cv2.COLOR_BAYER_RG2RGB) # converts to an opencv color type that renders
                 cv2.imwrite(os.path.join(self.file_target, f'pngimage_{frame.get_id()}_{capture_time}_{frame_time}.png'), frame_transport*16)
                 msg = 'Stream from \'{}\'. Press <Enter> to stop stream.'
                 cv2.imshow(msg.format(cam.get_name()), frame_transport*16)  # creates a nicely rendered image onscreen
